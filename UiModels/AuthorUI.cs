@@ -11,6 +11,6 @@ namespace UiModels
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int BookID { get; set; }
+        public int BookIDs { get; set; }
     }
 }

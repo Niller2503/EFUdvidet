@@ -16,10 +16,12 @@ namespace BusinessLogic
             authorUI.Id = author.Id;
             authorUI.FirstName = author.FirstName;
             authorUI.LastName = author.LastName;
-            //authorUI.books = author.books;
+            authorUI.BookIDs = author.books.Select(book => book.Id).ToList(); // Antaget at BookIDs er en List<int>
 
             return authorUI;
         }
+
+
 
         public BookUi ConvertToBookUi(Book book) 
         {
