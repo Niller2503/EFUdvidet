@@ -24,14 +24,9 @@ namespace DataAccess
         {
             return await db.Authors.FindAsync(authorID);
         }
-        public async Task CreateAuthorAsync(string fornavn, string efternavn)
+        public async Task CreateAuthorAsync(Author author)
         {
-            Author newAuthor = new Author
-            {
-                FirstName = fornavn,
-                LastName = efternavn
-            };
-            db.Authors.Add(newAuthor);
+            db.Authors.Add(author);
             await db.SaveChangesAsync();
         }
         public async Task UpdateAuthorAsync(int authorID, string nyFornavn, string nyEfternavn)
