@@ -29,7 +29,7 @@ namespace BusinessLogic
         }
         public async Task<BookUi> GetBookAsync(int bookID)
         {
-            var book = await db.GetBooksAsync(bookID);
+            Book book = await db.GetBooksAsync(bookID);
             var bookUi = cb.ConvertToBookUi(book);
             return bookUi;
         }
@@ -41,13 +41,13 @@ namespace BusinessLogic
 
         public async Task<bool> UpdateBookAsync(BookUi bookUi)
         {
-            var book = await cn.ConvertToBook(bookUi);
+            Book book = await cn.ConvertToBook(bookUi);
             return await db.UpdateBookAsync(book);
         }
 
         public async Task<bool> DeleteBookAsync(BookUi bookUi)
         {
-            var book = await cn.ConvertToBook(bookUi);
+            Book book = await cn.ConvertToBook(bookUi);
             return await db.DeleteBookAsync(book);
         }
     }
