@@ -5,32 +5,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UiModels;
 
 namespace BusinessLogic
 {
     public class BookBL
     {
         BookDataAccess db = new BookDataAccess();
+        ConvertUiToDb cn = new ConvertUiToDb();
+        ConvertDbToUi cb = new ConvertDbToUi();
 
-        public async Task<List<Book>> GetBooksAsync()
+        public async Task<List<BookUi>> GetBooksAsync()
         {
-            return await db.GetBooksAsync();
+            var bookList = await db.GetBooksAsync();
+            var bookUiList = new List<BookUi>();
+
+            foreach (var book in bookList)
+            {
+                var convertedBook = cb.ConvertToBookUi(book);
+                bookUiList.Add(convertedBook);
+            }
+            return bookUiList;
         }
-        public async Task<Book> GetBooksAsync(int bookID)
+        public async Task<BookUi> GetBookAsync(int bookID)
         {
-            return await db.GetBooksAsync(bookID);
+            var book = await db.GetBooksAsync(bookID);
+            var bookUi = cb.ConvertToBookUi(book);
+            return bookUi;
         }
-        public async Task CreateBookAsync(string title, DateTime publishDate, int storeID, int authorID)
+        public async Task<bool> CreateBookAsync(BookUi bookUi)
         {
-            await db.CreateBookAsync(title, publishDate, storeID, authorID);
+            Book book = await cn.ConvertToBook(bookUi);
+            return await db.CreateBookAsync(book);
         }
-        public async Task UpdateBookAsync(int bookID, string title, DateTime publishDate, int storeID, int authorID)
+
+        public async Task<bool> UpdateBookAsync(BookUi bookUi)
         {
-            await db.UpdateBookAsync(bookID, title, publishDate, storeID, authorID);
+            var book = await cn.ConvertToBook(bookUi);
+            return await db.UpdateBookAsync(book);
         }
-        public async Task DeleteBookAsync(int bookID)
+
+        public async Task<bool> DeleteBookAsync(BookUi bookUi)
         {
-            await db.DeleteBookAsync(bookID);
+            var book = await cn.ConvertToBook(bookUi);
+            return await db.DeleteBookAsync(book);
         }
     }
 }

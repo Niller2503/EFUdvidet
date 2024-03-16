@@ -20,7 +20,11 @@ namespace DataAccess
         //Store
         public async Task<List<Store>> GetStoreAsync()
         {
-            return await db.Stores.ToListAsync();
+            return await db
+                .Stores
+                .Include(b => b.Books)
+                .ThenInclude(a => a.Author)
+                .ToListAsync();
         }
 
         public async Task<Store> GetStoreAsync(int storeID)
@@ -28,32 +32,29 @@ namespace DataAccess
             return await db.Stores.FindAsync(storeID);
         }
 
-        public async Task CreateStoreAsync(string storeName)
+        public async Task<bool> CreateStoreAsync(Store store)
         {
-            Store nyButik = new Store
-            {
-                Name = storeName
-            };
-            db.Stores.Add(nyButik);
-
+            db.Stores.Add(store);
             await db.SaveChangesAsync();
+            return true;
         }
-        public async Task UpdateStoreAsync(int storeID, string newStoreName)
+        public async Task<bool> UpdateStoreAsync(Store updatedStore)
         {
-            Store store =await db.Stores.FindAsync(storeID);
-            if (store != null)
+            var existingStore= await db.Stores.FindAsync(updatedStore.Id);
+            if (existingStore != null)
             {
-                store.Name = newStoreName;
+                existingStore.Name = updatedStore.Name;
+
                 await db.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
-        public async Task DeleteStoreAsync(int storeID)
+        public async Task<bool> DeleteStoreAsync(Store store)
         {
-            Store store= await db.Stores.FindAsync(storeID);
-        if (store != null)
-            {
-                db.Stores.Remove(store);
-            }
+            db.Stores.Remove(store);
+            await db.SaveChangesAsync();
+            return true;
         }
     }
 }

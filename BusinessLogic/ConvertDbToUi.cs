@@ -12,30 +12,37 @@ namespace BusinessLogic
     {
         public AuthorUI ConvertToAuthorUi(Author author)
         {
-            AuthorUI authorUI = new AuthorUI();
-            authorUI.Id = author.Id;
-            authorUI.FirstName = author.FirstName;
-            authorUI.LastName = author.LastName;
-            authorUI.Books = author.books.Select(book => book.Id).ToList(); 
+            AuthorUI authorUI = new AuthorUI
+            {
+                Id = author.Id,
+                FirstName = author.FirstName,
+                LastName = author.LastName
+            };
 
             return authorUI;
         }
-        public BookUi ConvertToBookUi(Book book) 
+
+        public BookUi ConvertToBookUi(Book book)
         {
-            BookUi bookUI = new BookUi();
-            bookUI.Id = book.Id;
-            bookUI.Title = book.Title;
-            bookUI.PublishDate = book.PublishDate;
-            bookUI.StoreID = book.StoreID;
-            bookUI.AuthorId = book.AuthorId;
+            BookUi bookUI = new BookUi
+            {
+                Id = book.Id,
+                Title = book.Title,
+                PublishDate = book.PublishDate,
+                StoreID = book.StoreID,
+                AuthorId = book.AuthorId
+            };
 
             return bookUI;
         }
+
         public StoreUi ConvertToStoreUi(Store store)
         {
-            StoreUi storeUI = new StoreUi();
-            storeUI.Id = store.Id;
-            storeUI.Name = store.Name;
+            StoreUi storeUI = new StoreUi
+            {
+                Id = store.Id,
+                Name = store.Name
+            };
 
             return storeUI;
         }

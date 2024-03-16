@@ -13,34 +13,52 @@ namespace BusinessLogic
     {
         AuthorDataAccess db= new AuthorDataAccess();
         ConvertUiToDb cn= new ConvertUiToDb();
+        ConvertDbToUi cb= new ConvertDbToUi();
 
 
-        public async Task<List<Author>> GetAuthorAsync()
+        public async Task<List<AuthorUI>> GetAuthorAsync()
         {
-            return await db.GetAuthorAsync();
+            List<AuthorUI> authorUIList = new List<AuthorUI>();
+            foreach(Author author in await db.GetAuthorAsync())
+            {
+                AuthorUI convertedAuthor = cb.ConvertToAuthorUi(author);
+                authorUIList.Add(convertedAuthor);
+            }
+            return authorUIList;
         }
-        public async Task<Author>GetAuthorAsync(int authorID)
+        public async Task<AuthorUI>GetAuthorAsync(int authorID)
         {
-            return await db.GetAuthorAsync(authorID);
+            List<BookUi> bookList = new List<BookUi>();
+            Author author = await db.GetAuthorAsync(authorID);
+            foreach(Book book in author.books)
+            {
+                BookUi convertedBooks= cb.ConvertToBookUi(book);
+                bookList.Add(convertedBooks);
+            }
+            AuthorUI authorUI = cb.ConvertToAuthorUi(author);
+            authorUI.Books = bookList;
+            return cb.ConvertToAuthorUi(author);
         }
-        public async Task CreateAuthorAsync(AuthorUI authorUi)
+        public async Task<bool> CreateAuthorAsync(AuthorUI authorUi)
         {
-            
-            await db.CreateAuthorAsync(AuthorUI authorUi);
+             Author author = await cn.ConvertToAuthor(authorUi);
+            return await db.CreateAuthorAsync(author);
         }
-        public async Task UpdateAuthorAsync(int authorID, string nyFornavn, string nyEfternavn)
+        public async Task<bool> UpdateAuthorAsync(AuthorUI authorUi)
         {
-            await db.UpdateAuthorAsync(authorID, nyFornavn, nyEfternavn);
+            Author author = await cn.ConvertToAuthor(authorUi);
+                return await db.UpdateAuthorAsync(author);
         }
-        public async Task DeleteAuthorAsync(int authorID)
+        public async Task DeleteAuthorAsync(AuthorUI authorUi)
         {
-            await db.DeleteAuthorAsync(authorID);
+            Author author = await cn.ConvertToAuthor(authorUi);
+            await db.DeleteAuthorAsync(author);
         }
 
-        private Author Convert(AuthorUI authorUI)
-        {
-            cn.ConvertToAuthor(authorUI);
-            return authorUI;
-        }
+        //private Author Convert(AuthorUI authorUI)
+        //{
+        //    cn.ConvertToAuthor(authorUI);
+        //    return authorUI;
+        //}
     }
 }

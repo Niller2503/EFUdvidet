@@ -18,45 +18,52 @@ namespace DataAccess
         }
         public async Task<List<Book>> GetBooksAsync()
         {
-            return await db.Books.ToListAsync();
+            return await db
+                .Books
+                .Include(a => a.Author)
+                .ToListAsync();
         }
         public async Task<Book> GetBooksAsync(int bookID)
         {
             return await db.Books.FindAsync(bookID);
         }
-        public async Task CreateBookAsync(string title, DateTime publishDate, int storeID, int authorID)
+        public async Task<bool> CreateBookAsync(Book book)
         {
-            Book newBook = new Book
-            {
-                Title = title,
-                PublishDate = publishDate,
-                StoreID = storeID,
-                AuthorId = authorID
-            };
-            db.Books.Add(newBook);
+            db.Books.Add(book);
             await db.SaveChangesAsync();
+            return true;
         }
-        public async Task UpdateBookAsync(int bookID, string title, DateTime publishDate, int storeID, int authorID)
+        public async Task<bool> UpdateBookAsync(Book updatedBook)
         {
-            Book book = await db.Books.FindAsync(bookID);
-            if (book != null)
+            var existingBook = await db.Books.FindAsync(updatedBook.Id);
+
+            if (existingBook != null)
             {
-                book.Title = title;
-                book.PublishDate = publishDate;
-                book.StoreID = storeID;
-                book.AuthorId = authorID;
+                existingBook.Title = updatedBook.Title;
+                existingBook.PublishDate = updatedBook.PublishDate;
+                existingBook.StoreID = updatedBook.StoreID;
+                existingBook.AuthorId = updatedBook.AuthorId;
+
                 await db.SaveChangesAsync();
+                return true;
             }
+
+            return false;
         }
-        public async Task DeleteBookAsync(int bookID)
+        public async Task<bool> DeleteBookAsync(Book book)
         {
-            Book book = await db.Books.FindAsync(bookID);
-            if (book != null)
+            var existingBook = await db.Books.FindAsync(book.Id);
+
+            if (existingBook != null)
             {
-                db.Books.Remove(book);
+                db.Books.Remove(existingBook);
+                await db.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
-
-
     }
 }

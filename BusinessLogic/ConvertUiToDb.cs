@@ -10,31 +10,38 @@ namespace BusinessLogic
 {
     public class ConvertUiToDb
     {
-        public Author ConvertToAuthor(AuthorUI authorUi)
+        public async Task<Author> ConvertToAuthor(AuthorUI authorUI)
         {
-            Author author = new Author();
-            author.Id=authorUi.Id;
-            author.FirstName=authorUi.FirstName;
-            author.LastName=authorUi.LastName;
+            Author convertedAuthor = new Author()
+            {
+                Id = authorUI.Id,
+                FirstName = authorUI.FirstName,
+                LastName = authorUI.LastName
+            };
 
-            return author;
+
+            return convertedAuthor;
         }
-        public Book ConvertToBook(BookUi bookUi)
+        public async Task<Book> ConvertToBook(BookUi bookUi)
         {
-            Book book = new Book();
-            book.Id=bookUi.Id;
-            book.Title=bookUi.Title;
-            book.PublishDate=bookUi.PublishDate;
-            book.StoreID = bookUi.StoreID;
-            book.AuthorId=bookUi.AuthorId;
+            Book book = new Book
+            {
+                Id = bookUi.Id,
+                Title = bookUi.Title,
+                PublishDate = bookUi.PublishDate,
+                StoreID = bookUi.StoreID,
+                AuthorId = bookUi.AuthorId
+            };
 
             return book;
         }
         public Store ConvertToStore(StoreUi storeUi)
         {
-            Store store = new Store();
-            store.Id=storeUi.Id;
-            store.Name=storeUi.Name;
+            Store store = new Store
+            {
+                Id = storeUi.Id,
+                Name = storeUi.Name
+            };
 
             return store;
         }

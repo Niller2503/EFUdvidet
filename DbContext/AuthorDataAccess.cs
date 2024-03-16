@@ -24,28 +24,33 @@ namespace DataAccess
         {
             return await db.Authors.FindAsync(authorID);
         }
-        public async Task CreateAuthorAsync(Author author)
+        public async Task<bool> CreateAuthorAsync(Author author)
         {
             db.Authors.Add(author);
             await db.SaveChangesAsync();
+            return true;
         }
-        public async Task UpdateAuthorAsync(int authorID, string nyFornavn, string nyEfternavn)
+        public async Task<bool> UpdateAuthorAsync(Author updatedAuthor)
         {
-            Author author = await db.Authors.FindAsync(authorID);
-            if (author != null)
+            var existingAuthor = await db.Authors.FindAsync(updatedAuthor.Id);
+
+            if (existingAuthor != null)
             {
-                author.FirstName = nyFornavn;
-                author.LastName = nyEfternavn;
+                existingAuthor.FirstName = updatedAuthor.FirstName;
+                existingAuthor.LastName = updatedAuthor.LastName;
+
                 await db.SaveChangesAsync();
+                return true;
             }
+
+            return false;
         }
-        public async Task DeleteAuthorAsync(int authorID)
+        public async Task<bool> DeleteAuthorAsync(Author author)
         {
-            Author author = await db.Authors.FindAsync(authorID);
-            if (author != null)
-            {
-                db.Authors.Remove(author);
-            }
+            db.Authors.Remove(author);
+            await db.SaveChangesAsync();
+            return true;
         }
+
     }
 }
